@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: myapp2
+  namespace: production
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: myapp2
+  template:
+    metadata:
+      labels:
+        app: myapp2
+    spec:
+      containers:
+        - name: myapp2
+          image: harbor.devops.local:7581/devops/myapp2:latest
+          ports:
+            - containerPort: 80
+  strategy:
+    canary:
+      stableService: myapp2-stable
+      canaryService: myapp2-canary
+      ingress:
+        - name: myapp2
+          ingressClassName: nginx
+      steps:
+        - setWeight: 20
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 80
+        - pause: {duration: 30s}
