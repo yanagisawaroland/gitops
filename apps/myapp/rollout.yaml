@@ -25,14 +25,14 @@ spec:
       ingress:
         - name: myapp
           ingressClassName: nginx
+      analysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: service-name
+            value: myapp-canary
       steps:
         - setWeight: 20
-        - analysis:
-            templates:
-              - templateName: success-rate
-            args:
-              - name: service-name
-                value: myapp-canary
         - pause: {duration: 30s}
         - setWeight: 50
         - pause: {duration: 30s}
