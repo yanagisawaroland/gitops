@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: myapp2
-          image: harbor.devops.local:7581/devops/myapp2:13a1488f
+          image: harbor.devops.local:7581/devops/myapp2:c2dfc92c
           ports:
             - containerPort: 80
   strategy:
