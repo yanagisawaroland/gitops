@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: harbor.devops.local:7581/devops/myapp:58a7cadc
+          image: harbor.devops.local:7581/devops/myapp:latest
           ports:
             - containerPort: 80
   strategy:
@@ -27,6 +27,12 @@ spec:
           ingressClassName: nginx
       steps:
         - setWeight: 20
+        - analysis:
+            templates:
+              - templateName: success-rate
+            args:
+              - name: service-name
+                value: myapp-canary
         - pause: {duration: 30s}
         - setWeight: 50
         - pause: {duration: 30s}
