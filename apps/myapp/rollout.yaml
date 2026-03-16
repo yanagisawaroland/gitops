@@ -29,8 +29,8 @@ spec:
         templates:
           - templateName: success-rate
         args:
-          - name: service-name
-            value: myapp-canary
+          - name: ingress-name
+            value: myapp
       steps:
         - setWeight: 20
         - pause: {duration: 30s}
