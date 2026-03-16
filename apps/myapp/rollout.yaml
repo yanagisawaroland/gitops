@@ -22,9 +22,9 @@ spec:
     canary:
       stableService: myapp-stable
       canaryService: myapp-canary
-      ingress:
-        - name: myapp
-          ingressClassName: nginx
+      trafficRouting:
+        nginx:
+          stableIngress: myapp
       analysis:
         templates:
           - templateName: success-rate
