@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: podinfo
-          image: harbor.devops.local:7581/devops/podinfo:latest
+          image: harbor.devops.local:7581/devops/podinfo:30a51cce
           ports:
             - containerPort: 9898
           env:
