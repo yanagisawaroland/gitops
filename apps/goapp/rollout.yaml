@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: goapp
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goapp
+  template:
+    metadata:
+      labels:
+        app: goapp
+    spec:
+      containers:
+        - name: goapp
+          image: harbor.devops.local:7581/devops/goapp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "pxc-db-haproxy.mysql.svc.cluster.local"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: goapp-mysql-secret
+                  key: password
+            - name: DB_NAME
+              value: "goapp"
+            - name: APP_VERSION
+              value: "1.0.0"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 50m
+            limits:
+              memory: 128Mi
+              cpu: 200m
+  strategy:
+    canary:
+      stableService: goapp-stable
+      canaryService: goapp-canary
+      trafficRouting:
+        nginx:
+          stableIngress: goapp
+      analysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: ingress-name
+            value: goapp
+      steps:
+        - setWeight: 20
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 80
+        - pause: {duration: 30s}
