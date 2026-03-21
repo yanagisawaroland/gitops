@@ -4,4 +4,11 @@ kind: Kustomization
 bases:
   - ../../base
 
-patches: []
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+    target:
+      kind: Rollout
+      name: tomcatapp
