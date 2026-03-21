@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: goapp
-          image: harbor.devops.local:7581/devops/goapp:90d6e6cb
+          image: harbor.devops.local:7581/devops/goapp:28f0c864
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
