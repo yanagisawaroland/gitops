@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: tomcatapp
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcatapp
+  template:
+    metadata:
+      labels:
+        app: tomcatapp
+    spec:
+      containers:
+        - name: tomcatapp
+          image: harbor.devops.local:7581/devops/tomcatapp:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: jmx-metrics
+              containerPort: 9404
+          env:
+            - name: DB_HOST
+              value: "pxc-db-haproxy.mysql.svc.cluster.local"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tomcatapp-mysql-secret
+                  key: password
+            - name: DB_NAME
+              value: "tomcatapp"
+            - name: APP_VERSION
+              value: "1.0.0"
+            - name: CATALINA_OPTS
+              value: "-javaagent:/opt/jmx_prometheus_javaagent.jar=9404:/opt/jmx-config.yaml -Xms64m -Xmx128m"
+          readinessProbe:
+            httpGet:
+              path: /tomcatapp/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /tomcatapp/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 500m
+          volumeMounts:
+            - name: jmx-config
+              mountPath: /opt/jmx-config.yaml
+              subPath: jmx-config.yaml
+      volumes:
+        - name: jmx-config
+          configMap:
+            name: tomcatapp-jmx-config
+  strategy:
+    canary:
+      stableService: tomcatapp-stable
+      canaryService: tomcatapp-canary
+      trafficRouting:
+        nginx:
+          stableIngress: tomcatapp
+      analysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: ingress-name
+            value: tomcatapp
+      steps:
+        - setWeight: 20
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 80
+        - pause: {duration: 30s}
