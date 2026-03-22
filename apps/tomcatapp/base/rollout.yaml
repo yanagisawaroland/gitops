@@ -76,6 +76,8 @@ spec:
       trafficRouting:
         nginx:
           stableIngress: tomcatapp
+          additionalIngressAnnotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /tomcatapp/$2
       analysis:
         templates:
           - templateName: success-rate
