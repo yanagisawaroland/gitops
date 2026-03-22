@@ -37,7 +37,7 @@ spec:
             - name: DB_NAME
               value: "tomcatapp"
             - name: APP_VERSION
-              value: "1.0.0"
+              value: "2.0.0-bad"
             - name: CATALINA_OPTS
               value: "-javaagent:/opt/jmx_prometheus_javaagent.jar=9404:/opt/jmx-config.yaml -Xms64m -Xmx128m"
           readinessProbe:
