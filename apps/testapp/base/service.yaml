@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: testapp-stable
+  namespace: production
+  labels:
+    app: testapp
+spec:
+  selector:
+    app: testapp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testapp-canary
+  namespace: production
+  labels:
+    app: testapp
+spec:
+  selector:
+    app: testapp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
