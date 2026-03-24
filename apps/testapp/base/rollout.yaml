@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: testapp
-          image: harbor.devops.local:7581/devops/testapp:latest
+          image: harbor.devops.local:7581/devops/testapp:605b0760
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
