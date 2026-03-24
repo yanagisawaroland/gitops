@@ -24,11 +24,11 @@ spec:
             - name: APP_NAME
               value: "testapp"
             - name: APP_VERSION
-              value: "1.0.0"
+              value: "2.0.0-bad"
             - name: OTEL_ENDPOINT
               value: "otel-collector.observability.svc.cluster.local:4317"
             - name: FAIL_RATE
-              value: "0"
+              value: "33"
           readinessProbe:
             httpGet:
               path: /healthz
