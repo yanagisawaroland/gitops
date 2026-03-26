@@ -1,0 +1,68 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: tomcat2
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tomcat2
+  template:
+    metadata:
+      labels:
+        app: tomcat2
+    spec:
+      containers:
+        - name: tomcat2
+          image: harbor.devops.local:7581/devops/tomcat2:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: jmx
+              containerPort: 9404
+          env:
+            - name: APP_VERSION
+              value: "1.0.0"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 500m
+  strategy:
+    canary:
+      stableService: tomcat2-stable
+      canaryService: tomcat2-canary
+      trafficRouting:
+        nginx:
+          stableIngress: tomcat2
+      analysis:
+        templates:
+          - templateName: success-rate
+        args:
+          - name: ingress-name
+            value: tomcat2
+      steps:
+        - setWeight: 20
+        - pause: {duration: 30s}
+        - setWeight: 50
+        - pause: {duration: 30s}
+        - setWeight: 80
+        - pause: {duration: 30s}
