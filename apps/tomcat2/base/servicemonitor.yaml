@@ -13,6 +13,6 @@ spec:
     matchLabels:
       app: tomcat2
   endpoints:
-    - port: http
+    - port: jmx
       path: /metrics
       interval: 30s
