@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tomcat2
-          image: harbor.devops.local:7581/devops/tomcat2:v1.0.0
+          image: harbor.devops.local:7581/devops/tomcat2:3a858eba
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
