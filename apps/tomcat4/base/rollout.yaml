@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tomcat4
-          image: harbor.devops.local:7581/devops/tomcat4:0c6e777a
+          image: harbor.devops.local:7581/devops/tomcat4:3b2076d1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
