@@ -4,7 +4,7 @@ metadata:
   name: goapp
   namespace: production
 spec:
-  replicas: 2
+  replicas: 0
   selector:
     matchLabels:
       app: goapp
