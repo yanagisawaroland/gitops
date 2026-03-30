@@ -4,7 +4,7 @@ metadata:
   name: tomcat4
   namespace: staging
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: tomcat4
