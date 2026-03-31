@@ -23,6 +23,12 @@ spec:
             - name: jmx
               containerPort: 9404
           env:
+            - name: OTEL_SERVICE_NAME
+              value: "tomcat4"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.observability.svc:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "namespace=staging,app=tomcat4"
             - name: APP_VERSION
               value: "2.0.0"
           readinessProbe:
