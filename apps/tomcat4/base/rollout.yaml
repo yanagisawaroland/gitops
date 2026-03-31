@@ -26,7 +26,7 @@ spec:
             - name: OTEL_SERVICE_NAME
               value: "tomcat4"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://otel-collector.observability.svc:4317"
+              value: "http://otel-collector.observability.svc:4318"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "namespace=staging,app=tomcat4"
             - name: APP_VERSION
